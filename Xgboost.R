@@ -204,6 +204,18 @@ data$veccountries <- as.numeric(data$veccountries)
 data<-textshape::column_to_rownames(data, loc = 1)
 View(data)
 
+## Take out birthdate and application date
+
+data <- data [,-5]
+data <- data [,-4]
+
+
+## Scale data
+
+data2 <- scale(data)
+
+data2 <- as.data.frame(data2)
+
 ### MODEL AND DESCRIPTIVE STATISTICS
 
 st(data, title = "**Statistics**")
@@ -220,7 +232,7 @@ corrplot(M, method="number")
 set.seed(1234)
 
 #split into training (80%) and testing set (20%)
-parts = createDataPartition(data$IsActivemember, p = .8, list = F)
+parts = createDataPartition(data2$IsActivemember, p = .8, list = F)
 train = data[parts, ]
 test = data[-parts, ]
 
@@ -244,7 +256,7 @@ model = xgb.train(data = xgb_train, watchlist=watchlist, nrounds = 70)
 
 ## final model 
 
-final = xgboost(data = xgb_train, max.depth = 3, nrounds = 27, verbose = 1)
+final = xgboost(data = xgb_train, max.depth = 3, nrounds = 23, verbose = 1)
 
 final
 
@@ -269,6 +281,9 @@ importance_matrix
 
 # Nice graph
 xgb.plot.importance(importance_matrix[1:11,], main = "Importance per variable")
+
+
+
 
 
 
